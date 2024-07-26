@@ -1,0 +1,86 @@
+[gd_scene load_steps=14 format=3 uid="uid://bghgdupadjg7n"]
+
+[ext_resource type="Script" path="res://player.gd" id="1_7gfmn"]
+[ext_resource type="Texture2D" uid="uid://rrrfxl5fg7sx" path="res://art/playerGrey_up1.png" id="1_hfj58"]
+[ext_resource type="Texture2D" uid="uid://boeul846elgfm" path="res://art/playerGrey_up2.png" id="2_fokjm"]
+[ext_resource type="Texture2D" uid="uid://bhtkotc3vceoa" path="res://art/playerGrey_walk1.png" id="3_2nad4"]
+[ext_resource type="Texture2D" uid="uid://h7e2hb3d0b0a" path="res://art/playerGrey_walk2.png" id="4_c7hgi"]
+[ext_resource type="Shader" path="res://electric_ball.gdshader" id="6_ddkqc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ghraq"]
+radius = 59.3043
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hno46"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_hfj58")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_fokjm")
+}],
+"loop": true,
+"name": &"up",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_2nad4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_c7hgi")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_j2qqu"]
+radius = 23.0054
+
+[sub_resource type="Gradient" id="Gradient_g866e"]
+offsets = PackedFloat32Array(0, 0.163934, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.032, 0.8, 0.8, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1gima"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pik4f"]
+color_ramp = SubResource("Gradient_g866e")
+noise = SubResource("FastNoiseLite_1gima")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bag3u"]
+shader = ExtResource("6_ddkqc")
+shader_parameter/brightness = 0.3
+shader_parameter/time_scale = 3.0
+shader_parameter/noise = SubResource("NoiseTexture2D_pik4f")
+
+[node name="Player" type="Area2D"]
+collision_layer = 3
+script = ExtResource("1_7gfmn")
+
+[node name="CollisionElectricShield" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ghraq")
+disabled = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_hno46")
+animation = &"up"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2.08165e-12, -7)
+shape = SubResource("CircleShape2D_j2qqu")
+
+[node name="ElectricShield" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_bag3u")
+offset_left = -96.0
+offset_top = -92.0
+offset_right = 95.0
+offset_bottom = 92.0
+
+[node name="PowerUpTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

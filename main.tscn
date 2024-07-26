@@ -1,0 +1,125 @@
+[gd_scene load_steps=15 format=3 uid="uid://c0p4kie27il6n"]
+
+[ext_resource type="PackedScene" uid="uid://bghgdupadjg7n" path="res://player.tscn" id="1_jhdye"]
+[ext_resource type="Script" path="res://main.gd" id="1_xy2xy"]
+[ext_resource type="PackedScene" uid="uid://byafbl3n4fayn" path="res://mob.tscn" id="2_3mk3n"]
+[ext_resource type="PackedScene" uid="uid://cqqw6l7ig8qe" path="res://death_animation.tscn" id="4_oiokc"]
+[ext_resource type="PackedScene" uid="uid://cxa7m8kyu1mmx" path="res://hud.tscn" id="4_vhcak"]
+[ext_resource type="Shader" path="res://retro_tv.gdshader" id="5_2o1ti"]
+[ext_resource type="AudioStream" uid="uid://6r6a8sxd458m" path="res://art/House In a Forest Loop.ogg" id="5_qf5b5"]
+[ext_resource type="AudioStream" uid="uid://dxxy4e0ndchfa" path="res://art/aaah-te-banaste.mp3" id="6_pueas"]
+[ext_resource type="PackedScene" uid="uid://dni4060bfi64n" path="res://power_up.tscn" id="7_uwk0y"]
+[ext_resource type="AudioStream" uid="uid://3t7sv3ivy4ox" path="res://art/item_adquired.mp3" id="9_0r3if"]
+[ext_resource type="AudioStream" uid="uid://n2lcjmelfc0w" path="res://art/ray_spawned.mp3" id="10_8631o"]
+[ext_resource type="AudioStream" uid="uid://btjtatdg1tj31" path="res://art/enemy_dies.wav" id="12_jivsj"]
+
+[sub_resource type="Curve2D" id="Curve2D_1d55g"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -32, -16, 0, 0, 0, 0, 520, -16, 0, 0, 0, 0, 520, 736, 0, 0, 0, 0, -32, 736, 0, 0, 0, 0, -32, -16)
+}
+point_count = 5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8jaso"]
+shader = ExtResource("5_2o1ti")
+shader_parameter/overlay = true
+shader_parameter/scanlines_opacity = 0.4
+shader_parameter/scanlines_width = 0.25
+shader_parameter/grille_opacity = 0.3
+shader_parameter/resolution = Vector2(640, 480)
+shader_parameter/pixelate = true
+shader_parameter/roll = true
+shader_parameter/roll_speed = 3.525
+shader_parameter/roll_size = 15.0
+shader_parameter/roll_variation = 4.672
+shader_parameter/distort_intensity = 0.2
+shader_parameter/noise_opacity = 0.862
+shader_parameter/noise_speed = 5.0
+shader_parameter/static_noise_intensity = 0.2
+shader_parameter/aberration = 0.03
+shader_parameter/brightness = 1.4
+shader_parameter/discolor = true
+shader_parameter/warp_amount = 0.827
+shader_parameter/clip_warp = true
+shader_parameter/vignette_intensity = 1.185
+shader_parameter/vignette_opacity = 0.815
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_xy2xy")
+mob_scene = ExtResource("2_3mk3n")
+powerup_scene = ExtResource("7_uwk0y")
+death_animation = ExtResource("4_oiokc")
+
+[node name="Player" parent="." instance=ExtResource("1_jhdye")]
+
+[node name="MobTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="ScoreTimer" type="Timer" parent="."]
+
+[node name="StartTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="StartPosition" type="Marker2D" parent="."]
+position = Vector2(240, 450)
+
+[node name="MobPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_1d55g")
+
+[node name="MobSpawnLocation" type="PathFollow2D" parent="MobPath"]
+position = Vector2(-32, -16)
+
+[node name="HUD" parent="." instance=ExtResource("4_vhcak")]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = 2
+material = SubResource("ShaderMaterial_8jaso")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.0
+offset_top = -104.0
+offset_right = 568.0
+offset_bottom = 832.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.0862745, 0.258824, 0.670588)
+
+[node name="Music" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_qf5b5")
+pitch_scale = 0.9
+
+[node name="DeathSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_pueas")
+pitch_scale = 0.75
+
+[node name="PowerUpSpawn" type="Timer" parent="."]
+wait_time = 13.0
+
+[node name="PowerUpSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_0r3if")
+volume_db = 10.0
+
+[node name="PowerUpUsedSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("10_8631o")
+volume_db = 5.622
+pitch_scale = 0.64
+
+[node name="ShaderTimer" type="Timer" parent="."]
+wait_time = 20.0
+autostart = true
+
+[node name="MobDeathSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_jivsj")
+volume_db = 3.962
+pitch_scale = 1.3
+
+[connection signal="enemy_killed" from="Player" to="." method="_on_player_enemy_killed"]
+[connection signal="hit" from="Player" to="." method="game_over"]
+[connection signal="power_up_hit" from="Player" to="." method="adquire_powerup"]
+[connection signal="power_up_used" from="Player" to="." method="use_powerup"]
+[connection signal="timeout" from="MobTimer" to="." method="_on_mob_timer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_score_timer_timeout"]
+[connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]
+[connection signal="start_game" from="HUD" to="." method="new_game"]
+[connection signal="timeout" from="PowerUpSpawn" to="." method="_on_power_up_spawn_timeout"]

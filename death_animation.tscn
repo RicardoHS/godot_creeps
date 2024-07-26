@@ -1,0 +1,84 @@
+[gd_scene load_steps=13 format=3 uid="uid://cqqw6l7ig8qe"]
+
+[ext_resource type="Texture2D" uid="uid://8dmj5kbm1j8f" path="res://art/Free Smoke Fx  Pixel 05.png" id="1_yhgqj"]
+[ext_resource type="Script" path="res://death_animation.gd" id="2_nukxt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a5xx5"]
+atlas = ExtResource("1_yhgqj")
+region = Rect2(64, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1jna2"]
+atlas = ExtResource("1_yhgqj")
+region = Rect2(128, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dvtfm"]
+atlas = ExtResource("1_yhgqj")
+region = Rect2(192, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d8icy"]
+atlas = ExtResource("1_yhgqj")
+region = Rect2(256, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eysh6"]
+atlas = ExtResource("1_yhgqj")
+region = Rect2(320, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_035bo"]
+atlas = ExtResource("1_yhgqj")
+region = Rect2(384, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_don3c"]
+atlas = ExtResource("1_yhgqj")
+region = Rect2(448, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yoora"]
+atlas = ExtResource("1_yhgqj")
+region = Rect2(512, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1ppt2"]
+atlas = ExtResource("1_yhgqj")
+region = Rect2(576, 448, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1dsn4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a5xx5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1jna2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dvtfm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d8icy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eysh6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_035bo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_don3c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yoora")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1ppt2")
+}],
+"loop": false,
+"name": &"default",
+"speed": 9.0
+}]
+
+[node name="DeathAnimation" type="AnimatedSprite2D"]
+modulate = Color(0.94902, 0.117647, 1, 1)
+z_index = 1
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_1dsn4")
+script = ExtResource("2_nukxt")
+
+[connection signal="animation_finished" from="." to="." method="_on_animation_finished"]

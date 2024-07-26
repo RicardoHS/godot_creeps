@@ -1,0 +1,82 @@
+[gd_scene load_steps=12 format=3 uid="uid://byafbl3n4fayn"]
+
+[ext_resource type="Texture2D" uid="uid://bjb4m503he6vw" path="res://art/enemyFlyingAlt_1.png" id="1_lvsox"]
+[ext_resource type="Script" path="res://mob.gd" id="1_ti8bf"]
+[ext_resource type="Texture2D" uid="uid://7uwxxlomi3iu" path="res://art/enemyFlyingAlt_2.png" id="2_4gqrm"]
+[ext_resource type="Texture2D" uid="uid://tnvd46ajvtc6" path="res://art/enemySwimming_1.png" id="3_iq3oa"]
+[ext_resource type="Texture2D" uid="uid://blxtyvbl6kgh1" path="res://art/enemySwimming_2.png" id="4_c55x3"]
+[ext_resource type="Texture2D" uid="uid://cre0o04mn6edq" path="res://art/enemyWalking_1.png" id="5_7dgng"]
+[ext_resource type="Texture2D" uid="uid://v8adssls5mr1" path="res://art/enemyWalking_2.png" id="6_5047y"]
+[ext_resource type="AudioStream" uid="uid://dsia2gusftr40" path="res://art/mob_spawn.wav" id="8_qgavb"]
+[ext_resource type="AudioStream" uid="uid://btjtatdg1tj31" path="res://art/enemy_dies.wav" id="9_srlw5"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kj8k3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_lvsox")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_4gqrm")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_iq3oa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_c55x3")
+}],
+"loop": true,
+"name": &"swim",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_7dgng")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_5047y")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 3.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rg5ck"]
+radius = 29.0
+height = 70.0
+
+[node name="Mob" type="RigidBody2D" groups=["mobs"]]
+collision_mask = 0
+gravity_scale = 1.66533e-16
+script = ExtResource("1_ti8bf")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.75, 0.75)
+sprite_frames = SubResource("SpriteFrames_kj8k3")
+animation = &"fly"
+frame_progress = 0.829638
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_rg5ck")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(0.499998, 2)
+scale = Vector2(4.25, 5.9)
+
+[node name="SpawnSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_qgavb")
+volume_db = 5.0
+
+[node name="MobDeathSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_srlw5")
+volume_db = 3.962
+pitch_scale = 1.3
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
